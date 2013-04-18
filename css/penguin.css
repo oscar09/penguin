@@ -1,0 +1,81 @@
+@import url(chatwindow.css);
+
+#roster-area {
+float: right;
+border-left: solid 2px #ddd;
+padding: 10px;
+width: 250px;
+height: 300px;
+}
+.chat-name {
+color: #c33;
+}
+.chat-message .me {
+color: #33c;
+}
+.chat-event {
+font-style: italic;
+font-size: 75%;
+}
+.online, .chat {
+	float:left;
+    background: url('../images/css-sprites.png') no-repeat -20px -129px;
+	width: 11px;
+	height: 14px;
+}
+.away {
+	float:left;
+	background: url('../images/css-sprites.png') no-repeat -21px -203px;
+	width: 11px;
+	height: 14px;
+}
+.dnd, .xa
+{
+	float:left;
+	background: url('../images/css-sprites.png') no-repeat -20px -18px;
+	width: 11px;
+	height: 14px;
+}
+.unavailable {
+	float:left;
+	background: url('../images/css-sprites.png') no-repeat -20px -92px;
+	width: 11px;
+	height: 14px;
+	font-style: italic;
+	color: #808080;
+}
+.jid{
+	visibility: hidden;
+	display: none;
+}
+.im-container {
+	width: 150px;
+	border:1px none;	
+}
+.contact {
+	overflow: hidden;
+	padding: 3px;
+	-o-transition:.2s;
+	-ms-transition:.2s;
+	-moz-transition:.2s;
+	-webkit-transition:.2s;
+}
+.contact:hover {
+background-color: #DFDFDF;
+color: black;
+}
+.im-header
+{
+	background-color: #1435AD;
+	color: white;
+	text-align: center;
+}
+.one-edge-shadow {
+	-webkit-box-shadow: 2px 2px 6px -3px black;
+    -moz-box-shadow: 2px 2px 6px -3px black;
+    box-shadow: 2px 2px 6px -3px black;
+}
+.name {
+	padding-left: 20px;
+}
+

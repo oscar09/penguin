@@ -1,0 +1,76 @@
+.im-chat-window
+{
+}
+
+.im-chat-content
+{
+  padding: 3px 3px 3px 3px;
+  height: 300px;
+  overflow-y:scroll;
+  background: #FFFFFF;
+  overflow-y: auto;
+}
+.im-chat-input
+{
+  padding: 3px 3px 3px 3px;
+  border-top: 1px solid grey;
+  overflow: hidden;
+}
+.im-chat-input textarea
+{
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
+	width: 100%;
+}
+.im-chat-me
+{
+	color: black;
+	font-weight: bold;
+}
+.im-chat-other
+{
+	color: #009999;
+	font-weight: bold;
+}
+/*MINIMIZE STUFF*/
+
+#dialog_window_minimized_container {
+	position: fixed;
+	bottom: 0px;
+	left: 0px;
+}
+
+.dialog_window_minimized {
+	float: left;
+	padding: 5px 10px;
+	font-size: 12px;
+	cursor: pointer;
+	margin-right: 2px;
+	display: none;
+}
+
+.dialog_window_minimized .ui-icon {
+	display: inline-block !important;
+	position: relative;
+	top: 3px;
+	cursor: pointer;
+}
+
+.ui-dialog .ui-dialog-titlebar-minimize {
+	height: 18px;
+	width: 19px;
+	padding: 1px;
+	position: absolute;
+	right: 23px;
+	top: 9px;
+}
+
+.ui-dialog .ui-dialog-titlebar-minimize .ui-icon {
+	display: block;
+	margin: 1px;
+}
+
+.ui-dialog .ui-dialog-titlebar-minimize:hover, .ui-dialog .ui-dialog-titlebar-minimize:focus {
+	padding: 0;
+}
