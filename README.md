@@ -20,7 +20,7 @@ USAGE:
         	$('#chatcontainer').penguin(
             {
                 connection: connection,
-                username: 'user@domain.com',
+                username: 'user@jabber.server',
                 password: 'p@ssw0rd'
             });
      });
