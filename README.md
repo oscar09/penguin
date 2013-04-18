@@ -3,7 +3,7 @@ USAGE:
 	<html>
     <head>
     <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
-    <title>Groupie - Chapter 8</title>
+    <title>Penguin</title>
     <link rel='stylesheet' href='http://code.jquery.com/ui/1.10.2/themes/sunny/jquery-ui.css'>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
