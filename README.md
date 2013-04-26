@@ -23,6 +23,24 @@ USAGE:
                 username: 'user@jabber.server',
                 password: 'p@ssw0rd'
             });
+/*
+            OR
+
+            $('#chatcontainer').penguin(
+            {
+                url: 'http://jabber.server',
+                username: 'user@jabber.server',
+                password: 'p@ssw0rd'
+            });
+
+            OR
+
+             $('#chatcontainer').penguin(
+             {
+                url: 'http://jabber.server',
+                loginTitle: 'Client'
+             });
+*/
      });
     </script>
     </head>
