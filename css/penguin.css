@@ -1,4 +1,5 @@
 @import url(chatwindow.css);
+@import url(login.css);
 
 #roster-area {
 float: right;
@@ -49,8 +50,8 @@ font-size: 75%;
 	display: none;
 }
 .im-container {
-	width: 150px;
-	border:1px none;	
+	width: 200px;
+	border:1px none;
 }
 .contact {
 	overflow: hidden;

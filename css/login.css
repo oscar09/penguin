@@ -1,0 +1,110 @@
+.im-login {
+	background: #fff;
+	width: 200px;
+	height: 300px;
+
+}
+
+/*--------------------*/
+
+.im-login form
+{
+	top: 50%;
+	left: 50%;
+}
+
+
+/*--------------------*/
+
+.im-login h1
+{
+	text-align: center;
+	color: #666;
+	margin: 0 0 30px 0;
+	letter-spacing: 4px;
+	font: normal 26px/1 Verdana, Helvetica;
+	position: relative;
+}
+
+/*--------------------*/
+
+.im-login fieldset
+{
+	border: 0;
+	margin: 0;
+	text-align: center;
+}
+
+/*--------------------*/
+
+.im-login-inputs input
+{
+	background: #f1f1f1 url('../images/login-sprite.png') no-repeat;
+	padding: 15px 15px 15px 30px;
+	margin: 0 0 10px 0;
+	width: 170px; /* 353 + 2 + 45 = 400 */
+	border: 1px solid #ccc;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	-moz-box-shadow: 0 1px 1px #ccc inset, 0 1px 0 #fff;
+	-webkit-box-shadow: 0 1px 1px #ccc inset, 0 1px 0 #fff;
+	box-shadow: 0 1px 1px #ccc inset, 0 1px 0 #fff;
+}
+
+/*--------------------*/
+
+.im-login-inputs #username
+{
+	background-position: 5px -2px !important;
+}
+/*--------------------*/
+
+.im-login-inputs #password
+{
+	background-position: 5px -52px !important;
+}
+/*--------------------*/
+
+.im-login-inputs input:focus
+{
+	background-color: #fff;
+	border-color: #e8c291;
+	outline: none;
+	-moz-box-shadow: 0 0 0 1px #e8c291 inset;
+	-webkit-box-shadow: 0 0 0 1px #e8c291 inset;
+	box-shadow: 0 0 0 1px #e8c291 inset;
+}
+/*--------------------*/
+
+.im-login-actions #submit
+{
+	background-color: #ffb94b;
+	border-width: 1px;
+	border-style: solid;
+
+	height: 35px;
+	padding: 0;
+	width: 120px;
+	cursor: pointer;
+	font: bold 15px Arial, Helvetica;
+	color: #8f5a0a;
+	float: none;
+}
+/*--------------------*/
+
+.im-login-actions #submit:hover,#submit:focus
+{
+	background-color: #fddb6f;
+}
+/*--------------------*/
+
+.im-login-status
+{
+	color: #e10707;
+	margin-top: 4px;
+	margin-bottom: 10px;
+	padding-left: 24px;
+	height: 15px;
+	font-size: 12px;
+}

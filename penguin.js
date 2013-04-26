@@ -1,42 +1,63 @@
-/**
- * Jabber client.
- *
- * **Markdown** So far, the client has been tested with Openfire.
- *
- * Dependencies:
- * JQuery UI {@link http://jqueryui.com/download/}
- * JQuery {@link http://jquery.com/download/}
- * Strophe {@link http://strophe.im/strophejs/}
- *
- *
- *      @example
- *      var BOSH_SERVICE = "http://jabber.server/http-bind";
-		var connection = new Strophe.Connection(BOSH_SERVICE);
+/*
+  Class: penguin.js
+  Jabber client.
 
-		$('#chatcontainer').penguin(
-		{
-			connection: connection,
-			username: 'user@domain.com',
+  Dependencies:
+  - JQuery UI <http://jqueryui.com/download/>.
+  - JQuery <http://jquery.com/download/>.
+  - Strophe <http://strophe.im/strophejs/>.
+
+
+ _Example:_
+ (start code)
+    var BOSH_SERVICE = "http://jabber.server/http-bind";
+	var connection = new Strophe.Connection(BOSH_SERVICE);
+	$('#chatcontainer').penguin(
+	{
+		connection: connection,
+		username: 'user@jabber.server',
 		password: 'p@ssw0rd'
-		});
- *
- * Supported events:
- *  - afterSend(to, msg).- triggered when a message is sent.
- *  - onOpen.- triggered when the chat window is opened.
- *  - onChatReceived(from, msg).- triggered when a chat request is received.
- *
- * **Note:** Not all the methods have been implemented yet. The XMPP server
- * must support BOSH (http bind).
- *
- * Version: 0.5
- * [0.5]
+	});
+
+	OR
+
+	$('#chatcontainer').penguin(
+	{
+		url: 'http://jabber.server',
+		username: 'user@jabber.server',
+		password: 'p@ssw0rd'
+	});
+
+	OR
+
+	 $('#chatcontainer').penguin(
+	 {
+	    url: 'http://jabber.server',
+	 });
+(end)
+
+ *Supported events*:
+  - afterSend(to, msg).- triggered when a message is sent.
+  - onOpen.- triggered when the chat window is opened.
+  - onChatReceived(from, msg).- triggered when a chat request is received.
+
+ *Notes:*
+ - So far, the client has been tested with Openfire server.
+ - Not all the methods have been implemented yet. The XMPP server must support BOSH (http bind).
+
+ About: License
+ Penguin is dual licensed under MIT and GPL v3 licenses.
+
+ *Version:*
+  0.5
  */
 
 (function($, undefined)
 {
-	/**
-	 * Contact object. It stores the info linked to a contact.
-	 */
+	/*
+	  Contact object.
+	  It stores the info linked to a contact.
+	*/
 	function Contact() {
 		this.chatid = "";
 		this.jid = "";
@@ -53,58 +74,165 @@
 	var window_displacement = 15;
 
 	/**
-	 * Main widget. It will keep track of the user's roster and chat windows.
-	 *
-	 * @property {Object} connection Strophe connection.
-	 * @property {String} username Username.
-	 * @property {String} password User's password.
+	  Class: qs.penguin
+
+	  Main widget. It will keep track of the user's roster and chat windows.
+
+	 Parameters:
+
+	  connection - Strophe connection.
+	  username - Username.
+	  password - User's password.
 	 */
 	$.widget('qs.penguin',
 	{
 		options: {
 			//default values
 			connection: null,
-			username: null,
-			password: null
+			username: '',
+			password: '',
+			loginTitle: ''
 		},
-		/**
-		 * @private
-		 */
+
+		/*
+		Function: _create
+
+		 @private
+		*/
 		_create: function()
 		{
-			var conn = this.options.connection;
-			if(!conn)
+			//@todo - validate URL
+			if(!this.options.connection && !this.options.url)
 			{
-				console.log("Connection must be provided");
 				return false;
 			}
-			var that = this;
 
-			//build roster
+			this._buildLogin();
 			this._buildRoster();
 
-			/* @todo - this might be needed if minimize/maximize is implemented
-			$('body').append("<div id='dialog_window_minimized_container'></div>");
-			*/
-
-			//sends the connection request
-			conn.connect(this.options.username, this.options.password,
-			function(status){
-				if(status === Strophe.Status.CONNECTED)
-				{
-					that._setHandlers(conn);
-					that._onConnected();
-				}else if(status === Strophe.Status.DISCONNECTED)
-				{
-					//@todo - I need to add the 'logout' link
-					that._onDisconnected();
-				}
-			});
+			if(this.options.username.length > 0 && this.options.password.length > 0)
+			{
+				this._login(this.options.username, this.options.password);
+			}
+			else
+			{
+				this.loginForm.show();
+				return;
+			}
+			var that = this;
 		},
-		/**
-		 * @private
-		 * Builds the roster UI.
+		/*
+		Function: _init
+
+		@private
+		*/
+		_init: function()
+		{
+			//todo
+		},
+		/*
+		Function: destroy
+
+		Destroy method.
 		 */
+		destroy: function()
+		{
+			$.Widget.prototype.destroy.call(this);
+		},
+		/*
+		 Function: _buildLogin
+
+		 @private Builds the login form.
+		 */
+		_buildLogin: function()
+		{
+			var that = this;
+
+			var form =
+				'<div class="im-login"> '+
+					'<form> '+
+						'<h1>' +that.options.loginTitle+ '</h1> '+
+						'<div class="im-login-status"></div> '+
+						'<fieldset class="im-login-inputs"> '+
+							'<input id="username" type="text" placeholder="Username" autofocus required> '+
+							'<input id="password" type="password" placeholder="Password" required> '+
+						'</fieldset> '+
+						'<fieldset class="im-login-actions"> '+
+							'<input type="submit" id="submit" value="Log in"> '+
+						'</fieldset> '+
+					'</form> '+
+				'</div>';
+			var container = $(that.element);
+			form = $(form);
+			form.hide();
+			form.on('submit', function()
+			{
+				var username = $(this).find('#username').val();
+				var password = $(this).find('#password').val();
+				that._login(username, password);
+			});
+
+			container.append(form);
+
+			this.loginForm = form;
+		},
+		/*
+		 Function: _login
+
+		 @private Performs the login process.
+
+		 Parameters:
+
+		 username - Username
+		 password - Password
+		 */
+		_login: function(username, password)
+		{
+
+			var that = this;
+			var conn = new Strophe.Connection(this.options.url);
+			var status_field = that.loginForm.find('.im-login-status');
+			status_field.fadeTo('fast', 0);
+			//sends the connection request
+			conn.connect(username, password,
+				function(status){
+					switch(status)
+					{
+						case Strophe.Status.ERROR:
+							break;
+						case Strophe.Status.CONNECTING:
+							break;
+						case Strophe.Status.CONNFAIL:
+							break;
+						case Strophe.Status.AUTHENTICATING:
+							break;
+						case Strophe.Status.AUTHFAIL:
+							status_field.text('Invalid username or password').fadeTo('slow', 1);
+							break;
+						case Strophe.Status.CONNECTED:
+							that.loginForm.fadeOut(function()
+							{
+								that.contactList.show();
+							});
+							that._setHandlers(conn);
+							that._onConnected();
+							break;
+						case Strophe.Status.DISCONNECTED:
+							break;
+						case Strophe.Status.DISCONNECTING:
+							break;
+						case Strophe.Status.ATTACHED:
+							break;
+					}
+				});
+
+			this.options.connection = conn;
+		},
+		/*
+		Function: _buildRoster
+
+		@private Builds the roster UI.
+		*/
 		_buildRoster: function()
 		{
 			var that = this;
@@ -154,15 +282,20 @@
 
 			});
 
-			container.append(contacts);
+			im_list.hide();
+			im_list.append(contacts);
 			container.append(im_list);
 			that.contactList = im_list;
 		},
-		/**
-		 * Adds handlers for Strophe's connection object (presence, set, get, message)
-		 * @param {Object} [conn] Strophe connection
-		 * @private
-		 */
+		/*
+		Function: _setHandlers
+
+		@private Adds handlers for Strophe's connection object (presence, set, get, message)
+
+		Parameters:
+
+		conn - Strophe connection
+		*/
 		_setHandlers: function(conn)
 		{
 			var that = this;
@@ -174,12 +307,19 @@
 
 			conn.addHandler(that._onMessage.bind(that), null, "message");
 		},
-		/**
-		 * Handles the 'message' stanzas.
-		 * @param {Object} [stanza] Stanza
-		 * @returns {boolean}
-		 * @private
-		 */
+		/*
+		Function: _onMessage
+
+		@private Handles the 'message' stanzas.
+
+		Parameters:
+
+		stanza - Stanza
+
+		Returns:
+
+		Boolean
+		*/
 		_onMessage: function(stanza)
 		{
 			var sFrom = $(stanza).attr('from');
@@ -193,33 +333,54 @@
 			}
 			return true;
 		},
-		/**
-		 * Handles the 'IQ - Get' stanzas.
-		 * @param {Object} [stanza] Stanza
-		 * @returns {boolean}
-		 * @private
-		 */
+		/*
+		Function: _onGet
+
+		@private Handles the 'IQ - Get' stanzas.
+
+		Parameters:
+
+		stanza - Stanza
+
+		Returns:
+
+		Boolean
+		*/
 		_onGet: function(stanza)
 		{
 			//@todo
 			return true;
 		},
-		/**
-		 * Handles the 'IQ - Set' stanzas.
-		 * @param {Object} [stanza] Stanza
-		 * @returns {boolean}
-		 * @private
+		/*
+		Function: _onSet
+
+		@private Handles the 'IQ - Set' stanzas.
+
+		Parameters:
+
+		stanza - Stanza
+
+		Returns:
+
+		Boolean
 		 */
 		_onSet: function(stanza)
 		{
 			//@todo
 			return true;
 		},
-		/**
-		 * Handles 'Presence' stanzas.
-		 * @param {Object} [stanza] Stanza
-		 * @returns {boolean}
-		 * @private
+		/*
+		Function: _onPresence
+
+		@private Handles 'Presence' stanzas.
+
+		Parameters:
+
+		stanza - Stanza
+
+		Returns:
+
+		Boolean
 		 */
 		_onPresence: function(stanza)
 		{
@@ -262,9 +423,9 @@
 			return true;
 
 		},
-		/** todo
-		 * @private
-		 */
+		/* todo
+		@private
+		*/
 		_onDisconnected: function()
 		{
 			for (var contact in this.contacts) {
@@ -272,10 +433,11 @@
 			}
 			window_pos = 0;
 		},
-		/**
-		 * Executed when the user goes online. The roster list is fetched and stored into a local object.
-		 * @private
-		 */
+		/*
+		Function: _onConnected
+
+		@private Executed when the user goes online. The roster list is fetched and stored into a local object.
+		*/
 		_onConnected: function()
 		{
 			//get contacts
@@ -304,26 +466,15 @@
 
 			conn.send($pres());
 		},
-		/**
-		 *
-		 * @private
-		 */
-		_init: function()
-		{
-			//todo
-		},
-		/**
-		 * Destroy method.
-		 */
-		destroy: function()
-		{
-			$.Widget.prototype.destroy.call(this);
-		},
-		/**
-		 *Renders a contact into the roster.
-		 * @param {Contact} [contact] Contact object.
-		 * @private
-		 */
+		/*
+		Function: _renderContact
+
+		@private Renders a contact into the roster.
+
+		Parameters:
+
+		contact - Contact object.
+		*/
 		_renderContact: function(contact)
 		{
 			var list = this.contactList;
@@ -344,11 +495,15 @@
 				list.append(html.join(''));
 			}			
 		},
-		/**
-		 * Sends an XMPP message.
-		 * @param {String} [to] Recipent's JID.
-		 * @param {String} [to] Message
-		 * @private
+		/*
+		Function: _sendMessage
+
+		@private Sends an XMPP message.
+
+		Parameters:
+
+		to - Recipient's JID.
+		msg - Message
 		 */
 		_sendMessage: function(to, msg)
 		{
@@ -370,12 +525,16 @@
 				console.log("You have to log in.");
 			}
 		},
-		/**
-		 *
-		 * @param {String} [from] JID.
-		 * @param {String} [msg] Message.
-		 * @private
-		 */
+		/*
+		Function _receiveMesssage
+
+		@private Process an incoming message.
+
+		Parameters:
+
+		from - JID.
+		msg - Message.
+		*/
 		_receiveMessage: function(from, msg)
 		{
 			var contact = this.contacts[from];
@@ -409,20 +568,26 @@
 		}
 	});
 
-	/**
-	 * Chat window.
-	 *  @property {String} title window title.
-	 * @property {String} height window height.
-	 */
+	/*
+	Class: qs.chatwindow
+
+	Chat window.
+
+	Parameters::
+
+	title - window title.
+	height - window height.
+	*/
 	$.widget('qs.chatwindow',
 	{
 		options: {
 			title: 'anonymous',
 			height: 200
 		},
-		/**
-		 *
-		 * @private
+		/*
+		Function: _create
+
+		@private
 		 */
 		_create: function()
 		{
@@ -462,9 +627,10 @@
 			this.chatWindow = window;
 			this.chatarea = content;
 		},
-		/**
-		 *
-		 * @private
+		/*
+		Function: _init
+
+		@private
 		 */
 		_init: function()
 		{
@@ -485,17 +651,21 @@
 			);
 
 		},
-		/**
-		 * Destroy method.
+		/*
+		Function: destroy
+
+		Destroy method.
 		 */
 		destroy: function()
 		{
 			$.Widget.prototype.destroy.call(this);
 		},
-		/**
-		 * Writes a new message into the chat area.
-		 * @param {String} [who] JID
-		 * @param {String} [txt_msg] Message
+		/*
+		Function: writeMsg
+		 Writes a new message into the chat area.
+		 Parameters:
+		 who - JID.
+		 txt_msg - Message.
 		 */
 		writeMsg: function(who, txt_msg)
 		{
@@ -503,12 +673,19 @@
 			this._writeMsg(who, txt_msg);
 
 		},
-		/**
-		 * Writes a new message into the chat area.
-		 * @param {String} [who] JID
-		 * @param {String} [txt_msg] Message
-		 * @returns {boolean}
-		 * @private
+		/*
+		Function: _writeMsg
+
+		@private Writes a new message into the chat area.
+
+		Parameters:
+
+		who - JID.
+		txt_msg - Message
+
+		Returns:
+
+		Boolean
 		 */
 		_writeMsg: function(who, txt_msg)
 		{
@@ -522,6 +699,11 @@
 			var div_msg = $("<div class='im-chat-msg'>"+ who + txt_msg + "</div>");
 			this.chatarea.append(div_msg);
 		},
+		/*
+		Function: open
+
+		Opens the window.
+		 */
 		open: function()
 		{
 			this.chatWindow.dialog('open');
